@@ -1,0 +1,135 @@
+:root {
+	--color-1: #ffddaa;
+	--color-2: #e9d8c0;
+	--color-3: #c2bbb1;
+	--color-4: black;
+	--color-5: white;
+	--color-6: #aaaaaa;
+}
+
+#setting-icon {
+	display: block;
+	position: absolute;
+	top: 4px;
+	right: 4px;
+	width: 30px;
+	height: 30px;
+	padding: 4px;
+	z-index: 2;
+}
+
+.button-d {
+	background-color: var(--color-1);
+	border: 1px solid var(--color-4);
+	display: inline-block;
+	cursor: pointer;
+	user-select: none;
+}
+
+.button-e {
+	background-color: var(--color-1);
+	border: 1px solid var(--color-4);
+	display: inline-block;
+	padding: 1px 1rem;
+	cursor: text;
+	user-select: none;
+}
+
+.button-e.selecting {
+	background-color: var(--color-5);
+}
+
+.button-d:hover, .button-e:hover {
+	background-color: var(--color-2);
+}
+
+.button-d:active, .button-e:active {
+	background-color: var(--color-3);
+}
+
+.none-display {
+	display: none;
+}
+
+@media screen and (min-width: 800px) {
+	.normal {
+		float: left;
+		width: calc(50vw - 16px - 40px);
+		margin-right: 5px;
+	}
+	:root {
+		--basic-em: 1.5vw
+	}
+}
+
+@media screen and (max-width: 799px) {
+	:root {
+		--basic-em: 12px;
+	}
+}
+
+.fullscreen {
+	position: fixed;
+	width: 80vw;
+	left: 10vw;
+	height: 80vh;
+	top: 10vh;
+	border: 2px solid var(--color-4);
+	background-color: var(--color-6);
+	opacity: 0.9;
+	z-index: 2;
+}
+
+#homepage {
+	font-size: 1.5rem;
+}
+
+#homepage>.button-d {
+	padding: 0.1rem 1rem;
+}
+
+.normal {
+	border: 1px solid var(--color-4);
+	text-align: center;
+	padding: 1rem 1rem;
+	margin-top: 2vh;
+}
+
+header {
+	border: 2px solid var(--color-4);
+	padding: 1rem 0 1rem 2rem;
+	font-size: 2rem;
+}
+
+#spent-time, #reciting-step {
+	display: inline-block;
+	border: 1px dotted var(--color-4);
+	font-family: Consolas, kaiti, simhei, monospace;
+	padding: 1px 1rem;
+}
+
+.section-title {
+	text-align: center;
+	font-weight: bold;
+	color: var(--color-4);
+	font-size: 2em;
+	margin: 1em 0;
+}
+
+.close-icon-fullscreen {
+	position: absolute;
+	right: 20px;
+	top: 20px;
+	border-radius: 2px;
+	--color-1: #FF0000;
+	--color-2: #DD4444;
+	--color-3: #BB8888;
+}
+
+#files-dispose {
+	margin-left: 1rem;
+}
+
+#files-dispose .button-d {
+	padding: 1px 1rem;
+}

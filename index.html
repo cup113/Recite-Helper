@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="generator" content="Visual Studio Code">
+	<meta name="author" content="Jason M. Li">
+	<meta name="description" content="一个自动的背诵机器">
+	<meta name="keywords" content="背诵,助手,语文背诵,短句背诵,AI">
+	<meta name="robots" content="index,follow">
+	<script src="../Lib/jquery-3.6.0.min.js"></script>
+	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="footer.css">
+	<link rel="stylesheet" href="file-upload.css">
+	<link rel="shortcut icon" href="../Lib/cube.ico" type="image/x-icon">
+	<title>Recite Helper</title>
+</head>
+<body>
+	<header>
+		<div class="button-e caption" id="caption-1" onpointerdown="$('#caption-1').focus()" contenteditable="true">请输入大标题</div> - 
+		<div class="button-e caption" id="caption-2" onpointerdown="$('#caption-2').focus()" contenteditable="true">请输入副标题</div>
+		|
+		<div id="spent-time">
+			已用时: 
+			<span id="spent-time-1">00</span>:<span
+			id="spent-time-2">00</span>.<span
+			id="spent-time-3">000</span>
+		</div>
+		|
+		<div id="reciting-step">普遍测试未完成(0/0)</div>
+	</header>
+	<section class="normal" id="homepage">
+		<div class="button-d" onclick="show_section('#review-it');">复习一下</div>
+		<div class="button-d" onclick="show_section('#reciting')">开始背诵</div>
+		<div class="button-d" onclick="show_section('#stat')">查看统计</div>
+		<div class="button-d" onclick="show_section('#task-setting')">设置任务</div>
+	</section>
+	<section id="setting-icon" class="button-d" onclick="show_section('#settings');">
+		<img src="../img/settings.svg" id="setting-icon-svg">
+	</section>
+	<section class="fullscreen none-display" id="review-it">
+		<div class="button-d close-icon-fullscreen" onclick="show_section('#review-it');">
+			<img src="../img/close.svg">
+		</div>
+		<div class="section-title">复习</div>
+		<table border="1" id="review-table" align="center">
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>问题</th>
+					<th>答案</th>
+					<th>当前积分</th>
+					<th>考核分数</th>
+					<th>权重</th>
+				</tr>
+			</thead>
+			<tbody id="review-table-body">
+			</tbody>
+		</table>
+	</section>
+	<section class="normal none-display" id="reciting">
+		<div class="section-title">背诵主窗口</div>
+	</section>
+	<section class="normal none-display" id="result-showing">
+		<div class="section-title">背诵结果</div>
+	</section>
+	<section class="fullscreen none-display" id="settings">
+		<div class="button-d close-icon-fullscreen" onclick="show_section('#settings')">
+			<img src="../img/close.svg">
+		</div>
+		<div class="section-title">设置</div>
+	</section>
+	<section class="normal none-display" id="stat">
+		<div class="section-title">统计</div>
+	</section>
+	<section class="fullscreen none-display" id="task-setting">
+		<div class="button-d close-icon-fullscreen" onclick="show_section('#task-setting');">
+			<img src="../img/close.svg">
+		</div>
+		<div class="section-title">设置任务</div>
+		<div id="files-dispose">
+			<a href="javascript:void(0);" class="file-upload button-d">
+				<input type="file" name="name-setting-file" id="setting-file" accept=".txt, .rhf" onchange="">导入文件
+			</a>
+			<div class="button-d" onclick="">导出文件</div>
+		</div>
+		<hr>
+	</section>
+	<section class="fullscreen none-display" id="file-selecting">
+		<div class="button-d close-icon-fullscreen" onclick="show_section('#file-selecting');">
+			<img src="../img/close.svg">
+		</div>
+		<div class="section-title">选择文件</div>
+	</section>
+	<footer></footer>
+	<script src="main.js" charset="utf-8"></script>
+	<script src="footer.js" charset="utf-8"></script>
+</body>
+</html>
