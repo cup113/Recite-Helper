@@ -1,0 +1,28 @@
+#recite>p:not(#rc-submit) {
+	font-size: 1.5rem;
+	text-align: left;
+	background-color: #cccccc;
+	padding: 4px 4px;
+	text-indent: 2em;
+}
+
+#rc-ans {
+	display: block;
+	font-size: 0.8em;
+	resize: vertical;
+	min-height: 2em;
+	height: 3em;
+	width: calc(100% - 16px);
+	margin: 0 4px;
+	text-indent: 2em;
+}
+
+#rc-submit {
+	background-color: white;
+	text-align: right;
+	font-size: 2em;
+}
+
+#rc-submit>button {
+	font-size: 1em;
+}

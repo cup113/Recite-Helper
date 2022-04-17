@@ -10,46 +10,63 @@
 	<link rel="stylesheet" href="Lib/button.css">
 	<link rel="stylesheet" href="Lib/footer.css">
 	<link rel="stylesheet" href="Lib/fullscreen.css">
+	<link rel="stylesheet" href="style/frame.css">
+	<link rel="stylesheet" href="style/board.css">
+	<link rel="stylesheet" href="style/nav.css">
+	<link rel="stylesheet" href="style/recite.css">
 	<script src="Lib/jquery-3.6.0.min.js"></script>
 	<script src="Lib/fastest-levenshtein/mod.js"></script>
 </head>
 <body>
 	<div id="board">
-		<span class="button-e" id="title" contenteditable="true"></span>
-		<span id="spent-time"></span>
-		<span id="stage"></span>
+		<span class="button-i" id="title" contenteditable="true">背诵</span>
+		<span id="spent-time">00:00</span>
+		<span id="stage">--测试(-/-)</span>
 	</div>
 	<div id="nav">
-		<button class="button-d">复习一下</button>
-		<button class="button-d">开始背诵</button>
-		<button class="button-d">查看统计</button>
-		<button class="button-d">设置任务</button>
-		<button class="button-d">常规设置</button>
+		<button class="button-d" onclick="toggleShow('#review');">复习一下</button
+		><button class="button-d" onclick="toggleShow('#recite');">开始背诵</button
+		><button class="button-d" onclick="toggleShow('#task');">设置任务</button
+		><button class="button-d" onclick="toggleShow('#stat');">查看统计</button
+		><button class="button-d" onclick="toggleShow('#settings');">常规设置</button>
 	</div>
 	<div id="review" class="fullscreen none-display">
+		<button class="button-d close-icon-fullscreen"><img src="img/close.svg" alt="关闭" onclick="toggleShow('#review')"></button>
 		<h2>复习</h2>
 		<div id="review-table"></div>
 	</div>
 	<div id="recite" class="none-display">
 		<h2>背诵</h2>
-		<span id="rc-ques"></span>
-		<span id="rc-ans"></span>
-		<button class="button-d">提交</button>
+		<p>
+			问题:<span id="rc-ques"></span>
+		</p>
+		<p>
+			<span>请作答</span><textarea id="rc-ans"></textarea>
+		</p>
+		<p id="rc-submit"><button class="button-d">提交 submit</button></p>
 	</div>
 	<div id="result" class="none-display">
 		<h2>结果</h2>
+		<p id="rs-note">注：下列每一系列第一行表示正确答案、标答（黑色），剩余部分为作答（完全正确绿色/错序黄色/多余蓝色/缺失红色）</p>
+		<p id="rs-psimi">相似度：<span id="rs-simi" style="color: rgb(64, 64, 64);">00.00</span>%</p>
+		<p id="rs-ques"></p>
+		<p id="rs-ans"></p>
 	</div>
 	<div id="task" class="none-display">
 		<h2>任务设置</h2>
 	</div>
-	<div id="file" class="none-display">
-		<h2>文件处理</h2>
+	<div id="stat">
+		<h2>统计</h2>
 	</div>
 	<div id="settings" class="fullscreen none-display">
+		<button class="button-d close-icon-fullscreen"><img src="img/close.svg" alt="关闭" onclick="toggleShow('#settings')"></button>
 		<h2>设置</h2>
 	</div>
 	<footer></footer>
 	<script src="dist/footer.js"></script>
+	<script src="dist/display.js"></script>
+	<script src="dist/question.js"></script>
 	<script src="dist/init.js"></script>
+	<script src="dist/convert.js"></script>
 </body>
 </html>

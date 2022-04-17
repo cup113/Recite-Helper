@@ -1,0 +1,10 @@
+body {
+	padding: 0;
+	margin: 0;
+}
+
+body>div:not(.fullscreen) {
+	margin: 1rem 10vw;
+	text-align: center;
+	border-bottom: 1px solid gray;
+}

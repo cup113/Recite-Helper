@@ -1,0 +1,9 @@
+#nav {
+	font-size: 2rem;
+}
+
+#nav>.button-d {
+	font-size: 1em;
+	margin: 4px 0;
+	background-color: greenyellow;
+}
