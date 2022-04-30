@@ -1,9 +1,15 @@
 /// <reference path="./question.ts"/>
+
+function get_file_extension(filename: string) {
+	var last_dot = filename.lastIndexOf("."),
+	ext = filename.substring(last_dot + 1);
+	return ext;
+}
 /** Read .txt file into `questions`
  * T(O(N)), M(O(3N))
  * @param textfile file object (extension: txt)
  */
-function read_txt(textfile: Blob) {
+function read_txt(textfile: File) {
 	var reader = new FileReader();
 	reader.readAsText(textfile);
 	var txtContent: string = "",
@@ -45,9 +51,9 @@ function generate_rhp(): Blob {
 		return ret;
 	};
 	for (let q of questions) {
-		result += "q " + handle_lf(q.quesText) + "\r\n";
-		result += "c " + handle_lf(q.corrAns) + "\r\n";
-		result += "o " + q.score.toString() + " " + (q.passed? "1": "0") + "\r\n";
+		result += "q " + handle_lf(q.get_quesText()) + "\r\n";
+		result += "c " + handle_lf(q.get_corrAns()) + "\r\n";
+		result += "o " + q.get_score().toString() + " " + (q.get_passed()? "1": "0") + "\r\n";
 		result += "e \r\n";
 	}
 	var ret = new Blob([result]);
@@ -58,7 +64,7 @@ function generate_rhp(): Blob {
  * T(O(N)), M(O(2N))
  * @param rhpfile file object (RHP)
  */
-function read_rhp(rhpfile: Blob) {
+function read_rhp(rhpfile: File) {
 	var reader = new FileReader();
 	reader.readAsText(rhpfile);
 	var lines = (reader.result as string).split("\r\n"),
@@ -70,11 +76,11 @@ function read_rhp(rhpfile: Blob) {
 		if (first_ch == '-') tempstr += l;
 		else if (first_ch == 'q') tempstr = l;
 		else if (first_ch == 'c') {
-			questionNow.quesText = tempstr;
+			questionNow.set_quesText(tempstr);
 			tempstr = l;
 		}
 		else if (first_ch == 'o') {
-			questionNow.corrAns = tempstr;
+			questionNow.set_corrAns(tempstr);
 			tempstr = l;
 		}
 		else if (first_ch == 'e') {
@@ -84,8 +90,8 @@ function read_rhp(rhpfile: Blob) {
 				console.error("Length should be not less than 2.");
 				continue;
 			}
-			questionNow.score = parseInt(arr[0]);
-			questionNow.passed = (arr[1] == '0')? false: true;
+			questionNow.set_score(parseInt(arr[0]));
+			questionNow.set_passed((arr[1] == '0')? false: true);
 			questions.push(questionNow);
 		}
 	}

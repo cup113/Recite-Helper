@@ -10,6 +10,7 @@
 	<link rel="stylesheet" href="Lib/button.css">
 	<link rel="stylesheet" href="Lib/footer.css">
 	<link rel="stylesheet" href="Lib/fullscreen.css">
+	<link rel="stylesheet" href="Lib/file-upload.css">
 	<link rel="stylesheet" href="style/frame.css">
 	<link rel="stylesheet" href="style/board.css">
 	<link rel="stylesheet" href="style/nav.css">
@@ -54,6 +55,18 @@
 	</div>
 	<div id="task" class="none-display">
 		<h2>任务设置</h2>
+		<div class="file-upload">
+			<input type="file" id="file-upload-file" multiple accept=".txt,.rhp" onchange="file_upload_change();">
+			<div class="file-upload-icon">
+				<img src="img/upload.svg" alt="上传">
+				<span id="file-upload-filename">未选择文件</span>
+			</div>
+			<div class="file-upload-content">
+				点击这里上传文件或将文件拖动到虚线框内。
+				<br>
+				支持txt(纯文本)和rhp(背诵存档)文件格式。
+			</div>
+		</div>
 	</div>
 	<div id="stat">
 		<h2>统计</h2>
@@ -63,7 +76,8 @@
 		<h2>设置</h2>
 	</div>
 	<footer></footer>
-	<script src="dist/footer.js"></script>
+	<script src="Lib/footer.js"></script>
+	<script src="dist/file.js"></script>
 	<script src="dist/display.js"></script>
 	<script src="dist/question.js"></script>
 	<script src="dist/init.js"></script>
