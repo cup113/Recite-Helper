@@ -1,4 +1,4 @@
-/// <reference path="./question.ts"/>
+/// <reference path="../src/question.ts"/>
 
 function get_file_extension(filename: string) {
 	var last_dot = filename.lastIndexOf("."),
@@ -12,6 +12,7 @@ function get_file_extension(filename: string) {
 function read_txt(textfile: File) {
 	var reader = new FileReader();
 	reader.readAsText(textfile);
+	reader.onload = function () {
 	var txtContent: string = "",
 	tclen = (reader.result as string).length;
 	// CRLF/CR->LF
@@ -30,7 +31,8 @@ function read_txt(textfile: File) {
 			console.error("File format error");
 			continue;
 		}
-		questions.push(new Question(t.substring(0, firstlf - 1), t.substring(firstlf + 1, t.length)));
+		questions.push(new Question(t.substring(0, firstlf), t.substring(firstlf + 1)));
+	}
 	}
 }
 
@@ -39,7 +41,7 @@ function read_txt(textfile: File) {
  * @returns Blob Object
  */
 function generate_rhp(): Blob {
-	var result = "";
+	var result = "v 1\r\n";
 	var handle_lf = (str: string) => {
 		var tlines = str.split("\n"),
 		ret = "";
@@ -51,8 +53,8 @@ function generate_rhp(): Blob {
 		return ret;
 	};
 	for (let q of questions) {
-		result += "q " + handle_lf(q.get_quesText()) + "\r\n";
-		result += "c " + handle_lf(q.get_corrAns()) + "\r\n";
+		result += "q " + handle_lf(q.get_quesText());
+		result += "c " + handle_lf(q.get_corrAns());
 		result += "o " + q.get_score().toString() + " " + (q.get_passed()? "1": "0") + "\r\n";
 		result += "e \r\n";
 	}
@@ -67,12 +69,18 @@ function generate_rhp(): Blob {
 function read_rhp(rhpfile: File) {
 	var reader = new FileReader();
 	reader.readAsText(rhpfile);
+	reader.onload = function () {
 	var lines = (reader.result as string).split("\r\n"),
-	tempstr = "", questionNow = new Question();
-	for (let l of lines) {
+	tempstr = "",
+	questionNow = new Question();
+	var version = parseInt(lines[0].substring(2));
+	if (isNaN(version)) console.error("Version is not a number.");
+	for (let i=1; i<lines.length; i++) {
+		let l = lines[i];
 		if (l.length === 0) break;
 		let first_ch = l[0];
 		l = l.substring(2, l.length);
+
 		if (first_ch == '-') tempstr += l;
 		else if (first_ch == 'q') tempstr = l;
 		else if (first_ch == 'c') {
@@ -84,8 +92,7 @@ function read_rhp(rhpfile: File) {
 			tempstr = l;
 		}
 		else if (first_ch == 'e') {
-			tempstr = "";
-			let arr = l.split(" ");
+			let arr = tempstr.split(" ");
 			if (arr.length < 2) {
 				console.error("Length should be not less than 2.");
 				continue;
@@ -93,6 +100,9 @@ function read_rhp(rhpfile: File) {
 			questionNow.set_score(parseInt(arr[0]));
 			questionNow.set_passed((arr[1] == '0')? false: true);
 			questions.push(questionNow);
+			questionNow = new Question();
+			tempstr = "";
 		}
+	}
 	}
 }
