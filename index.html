@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,49 +11,65 @@
 	<link rel="stylesheet" href="Lib/footer.css">
 	<link rel="stylesheet" href="Lib/fullscreen.css">
 	<link rel="stylesheet" href="Lib/file-upload.css">
+	<link rel="stylesheet" href="Lib/error.css">
 	<link rel="stylesheet" href="style/frame.css">
 	<link rel="stylesheet" href="style/board.css">
 	<link rel="stylesheet" href="style/nav.css">
 	<link rel="stylesheet" href="style/recite.css">
+	<link rel="stylesheet" href="style/task.css">
+	<link rel="stylesheet" href="style/result.css">
 	<script src="Lib/jquery-3.6.0.min.js"></script>
-	<script src="Lib/fastest-levenshtein/mod.js"></script>
+	<script src="Lib/fastest-levenshtein/mod.min.js"></script>
 </head>
 <body>
-	<div id="board">
+	<div id="board" class="section">
 		<span class="button-i" id="title" contenteditable="true">背诵</span>
 		<span id="spent-time">00:00</span>
 		<span id="stage">--测试(-/-)</span>
 	</div>
-	<div id="nav">
-		<button class="button-d" onclick="toggleShow('#review');">复习一下</button
-		><button class="button-d" onclick="toggleShow('#recite');">开始背诵</button
-		><button class="button-d" onclick="toggleShow('#task');">设置任务</button
+	<div id="nav" class="section">
+		<button class="button-d" onclick="show('#review');">复习一下</button
+		><button class="button-d" onclick="start_recite();">开始背诵</button
+		><button class="button-d" onclick="show('#task');">设置任务</button
 		><button class="button-d" onclick="toggleShow('#stat');">查看统计</button
-		><button class="button-d" onclick="toggleShow('#settings');">常规设置</button>
+		><button class="button-d" onclick="show('#settings');">常规设置</button>
 	</div>
 	<div id="review" class="fullscreen none-display">
-		<button class="button-d close-icon-fullscreen"><img src="img/close.svg" alt="关闭" onclick="toggleShow('#review')"></button>
+		<button class="button-d close-icon-fullscreen"><img src="img/close.svg" alt="关闭" onclick="hide('#review')"></button>
 		<h2>复习</h2>
 		<div id="review-table"></div>
 	</div>
-	<div id="recite" class="none-display">
+	<div id="recite" class="section none-display">
 		<h2>背诵</h2>
 		<p>
-			问题:<span id="rc-ques"></span>
+			问题: <span id="rc-ques"></span>
 		</p>
 		<p>
 			<span>请作答</span><textarea id="rc-ans"></textarea>
 		</p>
-		<p id="rc-submit"><button class="button-d">提交 submit</button></p>
+		<p id="rc-submit"><button class="button-d" onclick="submit_question();">提交 submit ✔</button></p>
 	</div>
-	<div id="result" class="none-display">
+	<div id="result" class="section none-display">
 		<h2>结果</h2>
-		<p id="rs-note">注：下列每一系列第一行表示正确答案、标答（黑色），剩余部分为作答（完全正确绿色/错序黄色/多余蓝色/缺失红色）</p>
-		<p id="rs-psimi">相似度：<span id="rs-simi" style="color: rgb(64, 64, 64);">00.00</span>%</p>
-		<p id="rs-ques"></p>
+		<p id="rs-simi">
+			相似度：<span id="rs-simi-ttl" style="color: black">00.00%</span>
+			<span onclick="see_simi_detail();" id="rs-simi-dswitch" style="--rotate: 0deg;">▶</span>
+			<span id="rs-simi-detail" class="none-display">
+				宽松比较（公共字符）：<span id="rs-simi-relaxed">00.00%</span>
+				<br>
+				严格比较（编辑距离）：<span id="rs-simi-strict">00.00%</span>
+			</span>
+		</p>
+		<p id="rs-note">注：下列第一行表示正确答案，即标答（绿色），第二行表示作答</p>
+		<p id="rs-cor"></p>
 		<p id="rs-ans"></p>
+		<div id="rs-score">
+			评分(最低-10，最高10)：<input type="number" min="-10" max="10" step="1" placeholder="算法推荐: 0" id="rs-score-num">
+		</div>
+		<div id="rs-next-btn"><button class="button-d" onclick="next_question();">下一题 Next ➡</button></div>
 	</div>
-	<div id="task" class="none-display">
+	<div id="task" class="fullscreen none-display">
+		<button class="button-d close-icon-fullscreen"><img src="img/close.svg" alt="关闭" onclick="hide('#task')"></button>
 		<h2>任务设置</h2>
 		<div class="file-upload">
 			<input type="file" id="file-upload-file" multiple accept=".txt,.rhp" onchange="file_upload_change();">
@@ -72,22 +88,29 @@
 			<button id="task-upload-confirm" class="button-d" onclick="file_upload_confirm();">确定导入</button>
 		</div>
 		<div id="task-export">
-			<button class="button-d" onclick="export_rhp();">导出rhp文件</button>
+			<button class="button-d" onclick="clear_questions();">清空进度</button>
+			<button class="button-d" onclick="export_rhp();">导出进度为rhp文件</button>
 		</div>
 	</div>
-	<div id="stat">
+	<div id="stat" class="section">
 		<h2>统计</h2>
 	</div>
 	<div id="settings" class="fullscreen none-display">
-		<button class="button-d close-icon-fullscreen"><img src="img/close.svg" alt="关闭" onclick="toggleShow('#settings')"></button>
+		<button class="button-d close-icon-fullscreen"><img src="img/close.svg" alt="关闭" onclick="hide('#settings')"></button>
 		<h2>设置</h2>
 	</div>
+	<div id="__error"></div>
 	<footer></footer>
 	<script src="Lib/footer.js"></script>
-	<script src="dist/file.js"></script>
+	<script src="Lib/error.js"></script>
+	<script src="dist/init.js"></script>
+	<script src="dist/config.js"></script>
 	<script src="dist/display.js"></script>
 	<script src="dist/question.js"></script>
-	<script src="dist/init.js"></script>
 	<script src="dist/convert.js"></script>
+	<script src="dist/similarity.js"></script>
+	<script src="dist/task.js"></script>
+	<script src="dist/file.js"></script>
+	<script src="dist/recite.js"></script>
 </body>
 </html>

@@ -14,27 +14,43 @@ function file_upload_change() {
 }
 
 function file_upload_confirm() {
-	var files = ($("#file-upload-file")[0] as HTMLInputElement).files;
+	var files = ($("#file-upload-file")[0] as HTMLInputElement).files,
+	$process = $("#task-reading-process");
 	if (files.length === 0) {
-		console.error("No files input");
+		$process.text("没有上传文件！").css("color", "red");
 		return;
 	}
+	var titleChanged = false,
+	fileread = 0,
+	readend = function() {
+		++fileread;
+		if (fileread === files.length) {
+			$("#task-reading-process").text("读入完毕。时间: " + new Date().toLocaleTimeString()).css("color", "green");
+			console.log(questions);
+		}
+		else {
+			$("#task-reading-process").text(`读入中(${fileread}/${files.length})`).css("color", "black");
+		}
+	};
+	$("#task-reading-process").text(`读入中(0/${files.length})`).css("color", "black");
 	for (let i=0; i<files.length; i++) {
-		$("#task-reading-process").text(`读入中(0/${files.length})`);
 		let file = files[i],
 		ext = get_file_extension(file.name);
+		if ((!titleChanged) && (ext === "txt" || ext === "rhp")) {
+			$("#title").text(file.name.substring(0, file.name.length - ext.length - 1));
+			titleChanged = true;
+		}
 		if (ext === "txt") {
-			read_txt(file);
+			read_txt(file, readend);
 		}
 		else if (ext === "rhp") {
-			read_rhp(file);
+			read_rhp(file, readend);
 		}
 		else {
 			console.error(`extension = ${ext}: failed.`);
+			readend();
 		}
 	}
-	$("#task-reading-process").text("读入完毕。时间: " + new Date().toLocaleTimeString()).css("color", "green");
-	console.log(questions);
 }
 
 function export_rhp() {

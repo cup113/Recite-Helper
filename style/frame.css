@@ -3,8 +3,12 @@ body {
 	margin: 0;
 }
 
-body>div:not(.fullscreen) {
+.section {
 	margin: 1rem 10vw;
 	text-align: center;
 	border-bottom: 1px solid gray;
+}
+
+#task {
+	text-align: center;
 }

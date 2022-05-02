@@ -1,6 +1,4 @@
-var questions: Question[] = [],
-crscore: number = 15, // Common test required score
-strictk: number = 7; // strict index (0~10)
+var questions: Question[] = [];
 
 class Question {
 	private quesText: string; // Question Text
@@ -8,19 +6,18 @@ class Question {
 	private score: number; // Score (Common Test)
 	private passed: boolean; // if passed (Last Test)
 	private answeredTimes: number;
-	private faults: string[];
-	constructor(_quesText: string = "", _corrAns: string = "", _score: number = 0, _passed: boolean = false) {
+	constructor(_quesText: string = "", _corrAns: string = "", _score: number = 0, _passed: boolean = false, _answeredTimes: number = 0) {
 		this.quesText = _quesText;
 		this.corrAns = _corrAns;
 		this.score = _score;
 		this.passed = _passed;
+		this.answeredTimes = _answeredTimes;
 	}
 	public get_quesText() {return this.quesText;}
 	public get_corrAns() {return this.corrAns;}
 	public get_score() {return this.score;}
 	public get_passed() {return this.passed;}
 	public get_answeredTimes() {return this.answeredTimes;}
-	public get_faults() {return this.faults;}
 	public set_quesText(_quesText: string) {
 		this.quesText = _quesText;
 	}

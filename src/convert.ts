@@ -6,10 +6,11 @@ function get_file_extension(filename: string) {
 	return ext;
 }
 /** Read .txt file into `questions`
- * T(O(N)), M(O(3N))
+ * 
+ * T(O(N)), M(O(3N)) N=textfile.size
  * @param textfile file object (extension: txt)
  */
-function read_txt(textfile: File) {
+function read_txt(textfile: File, onreadend: () => any = ()=>(0)) {
 	var reader = new FileReader();
 	reader.readAsText(textfile);
 	reader.onload = function () {
@@ -33,7 +34,9 @@ function read_txt(textfile: File) {
 		}
 		questions.push(new Question(t.substring(0, firstlf), t.substring(firstlf + 1)));
 	}
-	}
+	onreadend();
+	};
+	reader.onerror = function() {console.log("Read file failed."); onreadend();};
 }
 
 /** Generate .rhp file from `questions`.
@@ -41,7 +44,7 @@ function read_txt(textfile: File) {
  * @returns Blob Object
  */
 function generate_rhp(): Blob {
-	var result = "v 1\r\n";
+	var result = "v 2\r\n";
 	var handle_lf = (str: string) => {
 		var tlines = str.split("\n"),
 		ret = "";
@@ -55,7 +58,7 @@ function generate_rhp(): Blob {
 	for (let q of questions) {
 		result += "q " + handle_lf(q.get_quesText());
 		result += "c " + handle_lf(q.get_corrAns());
-		result += "o " + q.get_score().toString() + " " + (q.get_passed()? "1": "0") + "\r\n";
+		result += "o " + q.get_score().toString() + " " + (q.get_passed()? "1": "0") + " " + q.get_answeredTimes().toString()+ "\r\n";
 		result += "e \r\n";
 	}
 	var ret = new Blob([result]);
@@ -66,7 +69,7 @@ function generate_rhp(): Blob {
  * T(O(N)), M(O(2N))
  * @param rhpfile file object (RHP)
  */
-function read_rhp(rhpfile: File) {
+function read_rhp(rhpfile: File, onreadend: () => any = ()=>(0)) {
 	var reader = new FileReader();
 	reader.readAsText(rhpfile);
 	reader.onload = function () {
@@ -93,16 +96,21 @@ function read_rhp(rhpfile: File) {
 		}
 		else if (first_ch == 'e') {
 			let arr = tempstr.split(" ");
-			if (arr.length < 2) {
-				console.error("Length should be not less than 2.");
+			if (arr.length < 3) {
+				console.error("Length should be not less than 3.");
 				continue;
 			}
+			if (isNaN(parseInt(arr[0]))) arr[0] = '0';
+			if (isNaN(parseInt(arr[2]))) arr[2] = '0';
 			questionNow.set_score(parseInt(arr[0]));
 			questionNow.set_passed((arr[1] == '0')? false: true);
+			questionNow.set_answeredTimes(parseInt(arr[2]));
 			questions.push(questionNow);
 			questionNow = new Question();
 			tempstr = "";
 		}
 	}
-	}
+	onreadend();
+	};
+	reader.onerror = function() {console.log("Read file failed."); onreadend();};
 }

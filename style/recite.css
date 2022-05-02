@@ -1,9 +1,14 @@
 #recite>p:not(#rc-submit) {
-	font-size: 1.5rem;
-	text-align: left;
-	background-color: #cccccc;
-	padding: 4px 4px;
-	text-indent: 2em;
+    font-size: 1.5rem;
+    text-align: left;
+    padding: 4px 4px;
+    text-indent: 2em;
+    border: 1px solid black;
+    margin: 8px 0;
+}
+
+#rc-ques {
+	color: #886600;
 }
 
 #rc-ans {

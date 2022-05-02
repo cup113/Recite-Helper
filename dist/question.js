@@ -1,22 +1,22 @@
-var questions = [], crscore = 15, // Common test required score
-strictk = 7; // strict index (0~10)
+var questions = [];
 var Question = /** @class */ (function () {
-    function Question(_quesText, _corrAns, _score, _passed) {
+    function Question(_quesText, _corrAns, _score, _passed, _answeredTimes) {
         if (_quesText === void 0) { _quesText = ""; }
         if (_corrAns === void 0) { _corrAns = ""; }
         if (_score === void 0) { _score = 0; }
         if (_passed === void 0) { _passed = false; }
+        if (_answeredTimes === void 0) { _answeredTimes = 0; }
         this.quesText = _quesText;
         this.corrAns = _corrAns;
         this.score = _score;
         this.passed = _passed;
+        this.answeredTimes = _answeredTimes;
     }
     Question.prototype.get_quesText = function () { return this.quesText; };
     Question.prototype.get_corrAns = function () { return this.corrAns; };
     Question.prototype.get_score = function () { return this.score; };
     Question.prototype.get_passed = function () { return this.passed; };
     Question.prototype.get_answeredTimes = function () { return this.answeredTimes; };
-    Question.prototype.get_faults = function () { return this.faults; };
     Question.prototype.set_quesText = function (_quesText) {
         this.quesText = _quesText;
     };

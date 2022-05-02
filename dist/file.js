@@ -7,26 +7,39 @@ function file_upload_change() {
     $("#file-upload-filename").text((files.length === 0) ? "未选择文件" : ((files.length === 1) ? filenames[0] : "\u5171".concat(files.length, "\u4E2A\u6587\u4EF6\uFF1A").concat(filenames.join(", "))));
 }
 function file_upload_confirm() {
-    var files = $("#file-upload-file")[0].files;
+    var files = $("#file-upload-file")[0].files, $process = $("#task-reading-process");
     if (files.length === 0) {
-        console.error("No files input");
+        $process.text("没有上传文件！").css("color", "red");
         return;
     }
+    var titleChanged = false, fileread = 0, readend = function () {
+        ++fileread;
+        if (fileread === files.length) {
+            $("#task-reading-process").text("读入完毕。时间: " + new Date().toLocaleTimeString()).css("color", "green");
+            console.log(questions);
+        }
+        else {
+            $("#task-reading-process").text("\u8BFB\u5165\u4E2D(".concat(fileread, "/").concat(files.length, ")")).css("color", "black");
+        }
+    };
+    $("#task-reading-process").text("\u8BFB\u5165\u4E2D(0/".concat(files.length, ")")).css("color", "black");
     for (var i = 0; i < files.length; i++) {
-        $("#task-reading-process").text("\u8BFB\u5165\u4E2D(0/".concat(files.length, ")"));
         var file = files[i], ext = get_file_extension(file.name);
+        if ((!titleChanged) && (ext === "txt" || ext === "rhp")) {
+            $("#title").text(file.name.substring(0, file.name.length - ext.length - 1));
+            titleChanged = true;
+        }
         if (ext === "txt") {
-            read_txt(file);
+            read_txt(file, readend);
         }
         else if (ext === "rhp") {
-            read_rhp(file);
+            read_rhp(file, readend);
         }
         else {
             console.error("extension = ".concat(ext, ": failed."));
+            readend();
         }
     }
-    $("#task-reading-process").text("读入完毕。时间: " + new Date().toLocaleTimeString()).css("color", "green");
-    console.log(questions);
 }
 function export_rhp() {
     var rhpfile = generate_rhp();

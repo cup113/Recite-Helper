@@ -2,6 +2,8 @@
 	position: relative;
 	border: 2px dashed gray;
 	background-color: #ffccaa;
+	padding: 8px 0;
+	margin-bottom: 16px;
 }
 
 .file-upload>input {
@@ -19,6 +21,7 @@
 
 .file-upload-content {
 	line-height: 1.5em;
+	text-align: center;
 }
 
 .file-upload-icon {
