@@ -1,0 +1,25 @@
+#settings input {
+	font-size: 1em;
+}
+
+#set-crscore, #set-exsimi {
+	width: 4em;
+}
+
+#settings>div {
+	margin: 8px 0;
+}
+
+#set-prs-num {
+	display: inline-block;
+	width: 3em;
+	text-align: center;
+	background-color: white;
+	margin-right: 2em;
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+#set-prstrict {
+	width: 200px;
+}

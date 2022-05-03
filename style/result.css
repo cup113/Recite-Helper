@@ -11,8 +11,8 @@
 	transform: rotate(var(--rotate));
 	text-align: center;
 	cursor: pointer;
-	user-select: none;
 	-webkit-user-select: none;
+	user-select: none;
 	margin: 0 8px;
 }
 

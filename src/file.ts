@@ -1,4 +1,5 @@
 /// <reference path="../src/convert.ts"/>
+/// <reference path="../src/config.ts"/>
 
 function file_upload_change() {
 	var files = ($("#file-upload-file")[0] as HTMLInputElement).files,
@@ -11,6 +12,7 @@ function file_upload_change() {
 			(files.length === 1)? filenames[0]: `共${files.length}个文件：${filenames.join(", ")}`
 		)
 	);
+	$("#task-upload-confirm").removeAttr("disabled");
 }
 
 function file_upload_confirm() {
@@ -20,13 +22,17 @@ function file_upload_confirm() {
 		$process.text("没有上传文件！").css("color", "red");
 		return;
 	}
+	$("#task-upload-confirm").attr("disabled", "disabled");
 	var titleChanged = false,
 	fileread = 0,
 	readend = function() {
 		++fileread;
 		if (fileread === files.length) {
 			$("#task-reading-process").text("读入完毕。时间: " + new Date().toLocaleTimeString()).css("color", "green");
-			console.log(questions);
+			round = 1;
+			check_config();
+			update_stage();
+			console.log(indexesNow);
 		}
 		else {
 			$("#task-reading-process").text(`读入中(${fileread}/${files.length})`).css("color", "black");
@@ -54,6 +60,10 @@ function file_upload_confirm() {
 }
 
 function export_rhp() {
+	if (questions.length === 0) {
+		Err.error_display("暂时没有问题，无法导出");
+		return;
+	}
 	var rhpfile = generate_rhp();
 	$("<span></span>").appendTo($("<a></a>").attr({
 		"href": URL.createObjectURL(rhpfile),

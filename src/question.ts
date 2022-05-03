@@ -1,4 +1,5 @@
-var questions: Question[] = [];
+var questions: Question[] = [],
+indexesNow: number[] = [];
 
 class Question {
 	private quesText: string; // Question Text
@@ -32,5 +33,9 @@ class Question {
 	}
 	public set_answeredTimes(_answeredTimes: number) {
 		this.answeredTimes = _answeredTimes;
+	}
+
+	public add_score(scoreAdd: number) {
+		this.set_score(this.score + scoreAdd);
 	}
 }

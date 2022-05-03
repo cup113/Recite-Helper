@@ -1,0 +1,49 @@
+.rev-tr {
+	display: flex;
+	border: 1px solid black;
+	width: 100%;
+	text-align: center;
+	align-items: center;
+	margin-bottom: 4px;
+	padding: 2px 0;
+}
+
+.rev-red {
+	color: red;
+}
+
+.rev-green {
+	color: green;
+}
+
+#review-thead {
+	font-weight: bold;
+}
+
+.rev-tr>span:nth-child(1) {
+	width: 2.5em;
+}
+
+.rev-tr>span:nth-child(2) {
+	flex-basis: 4em;
+    flex-grow: 1;
+}
+
+.rev-tr>span:nth-child(3) {
+	flex-basis: 4em;
+	flex-grow: 1;
+	color: green;
+}
+
+.rev-tr>span:nth-child(4) {
+	width: 2em;
+}
+
+.rev-tr>span:nth-child(5) {
+	width: 3.5em;
+	word-break: keep-all;
+}
+
+.rev-tr>span:nth-child(6) {
+	width: 2.5em;
+}

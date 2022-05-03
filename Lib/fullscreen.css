@@ -5,10 +5,11 @@
 	height: 80vh;
 	left: 10vw;
 	top: 10vh;
-	background-color: #bbbbbbee;
+	background-color: #bbbbbb;
 	padding: 0 5vw;
 	overflow-y: auto;
 	font-size: 1.5rem;
+	z-index: 2;
 }
 
 .close-icon-fullscreen {

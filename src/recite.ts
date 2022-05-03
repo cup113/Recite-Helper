@@ -4,30 +4,31 @@
 /// <reference path="../src/error.d.ts"/>
 /// <reference path="../src/config.ts"/>
 
-var qPointer = 0,
-isReciting = false;
-
 function next_question() {
-	if (qPointer > questions.length) {
+	document.getElementById("rs-ans").focus();
+	if (qPointer > indexesNow.length) {
 		Err.error_display("问题指针异常");
 		return;
 	}
-	isReciting = true;
 	if (!$("#result").hasClass("none-display")) {
 		$("#result").addClass("none-display");
 	}
-	var questionNow = questions[qPointer];
-	$("#rc-ques").text(questionNow.get_quesText());
 	$("#rc-ans").removeAttr("disabled").val("");
+	if (laAllPassed) return;
+	isReciting = true;
+	var qi = indexesNow[qPointer],
+	questionNow = questions[qi];
+	$("#rc-ques").text(questionNow.get_quesText());
+	$("#rc-qid").text(qi);
+	$("#rc-scnow").text(questionNow.get_score().toString());
 }
 
 function start_recite() {
-	if (questions.length === 0) {
-		Err.error_display("现存问题为空！请导入文件或新增问题。");
+	if (indexesNow.length === 0) {
+		Err.error_display((questions.length === 0)? "你还没有导入问题哦。请导入文件或新增问题。": (laAllPassed)? "现存问题已全部通过，请寻找新问题": "现存可用问题为空！请导入文件或新增问题。");
 		return;
 	}
-	if ($("#recite").hasClass("none-display") || (!isReciting)) show("#recite");
-	else Err.error_display("背诵已开始！", 4000, "❕")
+	toggleShow("#recite");
 	if (!isReciting) next_question();
 }
 
@@ -36,7 +37,7 @@ function submit_question() {
 	isReciting = false;
 	show("#result");
 	var ans = $("#rc-ans").attr("disabled", "disabled").val() as string,
-	questionNow = questions[qPointer],
+	questionNow = questions[indexesNow[qPointer]],
 	corrAns = questionNow.get_corrAns(),
 	simiRelaxed = simi_quick(ans, corrAns),
 	simiStrict = simi_levenshtein(ans, corrAns),
@@ -44,7 +45,7 @@ function submit_question() {
 	recScore = ((simiTtl * 100 >= exSimi)?
 	((simiTtl * 100 - exSimi) / (100 - exSimi)): (
 		(exSimi <= 50)? ((simiTtl * 100 - exSimi) / exSimi): (
-			(simiTtl * 100 <= 2 * exSimi - 100)? 0: (
+			(simiTtl * 100 <= 2 * exSimi - 100)? (-1): (
 				(simiTtl * 100 - exSimi) / (100 - exSimi)
 			)
 		)
@@ -57,8 +58,9 @@ function submit_question() {
 	$("#rs-simi-ttl").text((simiTtl * 100).toFixed(2) + "%").css("color", simiColor);
 	$("#rs-simi-relaxed").text((simiRelaxed * 100).toFixed(2) + "%");
 	$("#rs-simi-strict").text((simiStrict * 100).toFixed(2) + "%");
-	$("#rs-score-num").attr("placeholder", "算法推荐: " + recScore.toFixed(0)).val(recScore.toFixed(0));
-	++qPointer;
+	if (!coAllPassed) {
+		$("#rs-score-num").attr("placeholder", "算法推荐: " + recScore.toFixed(0)).val(recScore.toFixed(0));
+	}
 }
 
 function see_simi_detail() {
@@ -70,4 +72,72 @@ function see_simi_detail() {
 		hide("#rs-simi-detail");
 		$("#rs-simi-dswitch").css("--rotate", "0deg");
 	}
+}
+
+function submit_result() {
+	if (!coAllPassed) {
+		let scoreAdd = parseInt($("#rs-score-num").val() as string);
+		if (isNaN(scoreAdd) || scoreAdd < -10 || scoreAdd > 10) {
+			Err.error_display("请输入-10~10之间的整数！");
+			return;
+		}
+		else {
+			questions[indexesNow[qPointer]].add_score(scoreAdd);
+		}
+	}
+	else if (!laAllPassed) {
+		let pass1 = (document.getElementById("rs-pass-1") as HTMLInputElement).checked,
+		pass0 = (document.getElementById("rs-pass-0") as HTMLInputElement).checked;
+		if ((!pass1) && (!pass0)) {
+			Err.error_display("请做出选择");
+			return;
+		}
+		else if (pass1){
+			questions[indexesNow[qPointer]].set_passed(true);
+			(document.getElementById("rs-pass-1") as HTMLInputElement).checked = false;
+		}
+		else {
+			(document.getElementById("rs-pass-0") as HTMLInputElement).checked = false;
+		}
+	}
+	if (qPointer <= indexesNow.length - 2) {
+		qPointerNext();
+	}
+	else if (!coAllPassed){
+		let tempIndexes: number[] = [];
+		for (let i=0; i<indexesNow.length; i++) {
+			if (questions[indexesNow[i]].get_score() < crScore) tempIndexes.push(indexesNow[i]);
+		}
+		indexesNow = tempIndexes;
+		++round;
+		set_qPointer(0);
+		if (tempIndexes.length === 0) {
+			hide("#rs-score");
+			show("#rs-pass");
+			for (let i=0; i<questions.length; i++) {
+				if (!questions[i].get_passed()) indexesNow.push(i);
+			}
+			pass_co();
+		}
+	}
+	else if (!laAllPassed){
+		let tempIndexes: number[] = [];
+		for (let i=0; i<indexesNow.length; i++) {
+			if (!questions[indexesNow[i]].get_passed()) tempIndexes.push(indexesNow[i]);
+		}
+		indexesNow = tempIndexes;
+		++round;
+		set_qPointer(0);
+		if (tempIndexes.length === 0) {
+			show("#rs-score");
+			hide("#rs-pass");
+			hide("#recite");
+			isReciting = false;
+			pass_la();
+		}
+	}
+	else {
+		console.error("Recite ???");
+	}
+	next_question();
 }

@@ -1,4 +1,4 @@
-var questions = [];
+var questions = [], indexesNow = [];
 var Question = /** @class */ (function () {
     function Question(_quesText, _corrAns, _score, _passed, _answeredTimes) {
         if (_quesText === void 0) { _quesText = ""; }
@@ -31,6 +31,9 @@ var Question = /** @class */ (function () {
     };
     Question.prototype.set_answeredTimes = function (_answeredTimes) {
         this.answeredTimes = _answeredTimes;
+    };
+    Question.prototype.add_score = function (scoreAdd) {
+        this.set_score(this.score + scoreAdd);
     };
     return Question;
 }());

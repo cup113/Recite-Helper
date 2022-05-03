@@ -7,6 +7,12 @@
 	font-size: 1.5em;
 }
 
-#spent-time {
-	font-size: 1.25em;
+#nav {
+	font-size: 2rem;
+}
+
+#nav>.button-d {
+	font-size: 1em;
+	margin: 4px 0;
+	background-color: greenyellow;
 }

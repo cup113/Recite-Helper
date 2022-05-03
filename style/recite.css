@@ -2,9 +2,20 @@
     font-size: 1.5rem;
     text-align: left;
     padding: 4px 4px;
-    text-indent: 2em;
-    border: 1px solid black;
     margin: 8px 0;
+}
+
+#rc-qspan, #rc-note {
+	display: block;
+	text-indent: 3rem;
+}
+
+#rc-note {
+	font-size: 0.6em;
+}
+
+#rc-note>span {
+	margin-right: 2em;
 }
 
 #rc-ques {

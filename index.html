@@ -5,6 +5,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="keywords" content="背诵,助手,语文背诵">
 	<meta name="description" content="背诵助手，您短句背诵的好帮手">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>背诵助手</title>
 	<link rel="shortcut icon" href="Lib/cube.ico" type="image/x-icon">
 	<link rel="stylesheet" href="Lib/button.css">
@@ -14,40 +15,53 @@
 	<link rel="stylesheet" href="Lib/error.css">
 	<link rel="stylesheet" href="style/frame.css">
 	<link rel="stylesheet" href="style/board.css">
-	<link rel="stylesheet" href="style/nav.css">
 	<link rel="stylesheet" href="style/recite.css">
 	<link rel="stylesheet" href="style/task.css">
 	<link rel="stylesheet" href="style/result.css">
+	<link rel="stylesheet" href="style/review.css">
+	<link rel="stylesheet" href="style/setting.css">
 	<script src="Lib/jquery-3.6.0.min.js"></script>
 	<script src="Lib/fastest-levenshtein/mod.min.js"></script>
 </head>
 <body>
 	<div id="board" class="section">
 		<span class="button-i" id="title" contenteditable="true">背诵</span>
-		<span id="spent-time">00:00</span>
-		<span id="stage">--测试(-/-)</span>
+		<span id="stage">...</span>
 	</div>
 	<div id="nav" class="section">
-		<button class="button-d" onclick="show('#review');">复习一下</button
-		><button class="button-d" onclick="start_recite();">开始背诵</button
-		><button class="button-d" onclick="show('#task');">设置任务</button
-		><button class="button-d" onclick="toggleShow('#stat');">查看统计</button
-		><button class="button-d" onclick="show('#settings');">常规设置</button>
+		<button type="button" class="button-d" onclick="start_review();">复习一下</button
+		><button type="button" class="button-d" onclick="start_recite();">开始背诵</button
+		><button type="button" class="button-d" onclick="show('#task');">设置任务</button
+		><button type="button" class="button-d" onclick="show('#settings');">常规设置</button><button type="button" class="button-d" onclick="export_rhp();">导出进度</button
+		>
 	</div>
 	<div id="review" class="fullscreen none-display">
-		<button class="button-d close-icon-fullscreen"><img src="img/close.svg" alt="关闭" onclick="hide('#review')"></button>
+		<button type="button" class="button-d close-icon-fullscreen"><img src="img/close.svg" alt="关闭" onclick="close_review();"></button>
 		<h2>复习</h2>
-		<div id="review-table"></div>
+		<div id="review-table">
+			<div id="review-thead">
+				<div class="rev-tr">
+					<span>编号</span>
+					<span>问题</span>
+					<span>标答</span>
+					<span>积分</span>
+					<span>统一 考核</span>
+					<span>已答次数</span>
+				</div>
+			</div>
+			<div id="review-tbody"></div>
+		</div>
 	</div>
 	<div id="recite" class="section none-display">
-		<h2>背诵</h2>
+		<h2>背诵主题</h2>
 		<p>
-			问题: <span id="rc-ques"></span>
+			<span id="rc-qspan">问题：<span id="rc-ques"></span></span>
+			<span id="rc-note"><span>id：<span id="rc-qid">0</span></span><span>当前积分：<span id="rc-scnow">0</span>（<span id="rc-screq">10</span>分通过）</span></span>
 		</p>
 		<p>
-			<span>请作答</span><textarea id="rc-ans"></textarea>
+			<textarea id="rc-ans" placeholder="请作答..."></textarea>
 		</p>
-		<p id="rc-submit"><button class="button-d" onclick="submit_question();">提交 submit ✔</button></p>
+		<p id="rc-submit"><button type="button" class="button-d" onclick="submit_question();">提交 submit ✔</button></p>
 	</div>
 	<div id="result" class="section none-display">
 		<h2>结果</h2>
@@ -66,10 +80,18 @@
 		<div id="rs-score">
 			评分(最低-10，最高10)：<input type="number" min="-10" max="10" step="1" placeholder="算法推荐: 0" id="rs-score-num">
 		</div>
-		<div id="rs-next-btn"><button class="button-d" onclick="next_question();">下一题 Next ➡</button></div>
+		<div id="rs-pass" class="none-display">
+			<label for="rs-pass-1">
+				<input type="radio" name="rs-ifpass" id="rs-pass-1">通过
+			</label>
+			<label for="rs-pass-0">
+				<input type="radio" name="rs-ifpass" id="rs-pass-0">不通过
+			</label>
+		</div>
+		<div id="rs-next-btn"><button type="button" class="button-d" onclick="submit_result();">下一题 Next ➡</button></div>
 	</div>
 	<div id="task" class="fullscreen none-display">
-		<button class="button-d close-icon-fullscreen"><img src="img/close.svg" alt="关闭" onclick="hide('#task')"></button>
+		<button type="button" class="button-d close-icon-fullscreen"><img src="img/close.svg" alt="关闭" onclick="hide('#task')"></button>
 		<h2>任务设置</h2>
 		<div class="file-upload">
 			<input type="file" id="file-upload-file" multiple accept=".txt,.rhp" onchange="file_upload_change();">
@@ -85,32 +107,45 @@
 		</div>
 		<div id="task-reading">
 			<span id="task-reading-process" style="color: black">...</span>
-			<button id="task-upload-confirm" class="button-d" onclick="file_upload_confirm();">确定导入</button>
+			<button type="button" id="task-upload-confirm" class="button-d" onclick="file_upload_confirm();">确定导入</button>
 		</div>
 		<div id="task-export">
-			<button class="button-d" onclick="clear_questions();">清空进度</button>
-			<button class="button-d" onclick="export_rhp();">导出进度为rhp文件</button>
+			<button type="button" class="button-d" onclick="clear_questions();">清空进度</button>
+			<button type="button" class="button-d" onclick="export_rhp();">导出进度为rhp文件</button>
 		</div>
 	</div>
-	<div id="stat" class="section">
+	<div id="stat" class="section none-display">
 		<h2>统计</h2>
 	</div>
 	<div id="settings" class="fullscreen none-display">
-		<button class="button-d close-icon-fullscreen"><img src="img/close.svg" alt="关闭" onclick="hide('#settings')"></button>
+		<button type="button" class="button-d close-icon-fullscreen"><img src="img/close.svg" alt="关闭" onclick="hide('#settings')"></button>
 		<h2>设置</h2>
+		<div title="请输入一个整数。默认为15，最少为1。解释：普遍测试时，回答一次最多加10分，每个问题达到该分数后才会进入统一测试。详见使用说明。">
+			<span>普遍测试所需分数：</span>
+			<input type="number" id="set-crscore" min="1" step="1" onchange="set_crScore(parseInt($('#set-crscore').val()), true, true);">
+		</div>
+		<div title="请输入一个整数。默认为60，至少为1，至多为99。解释：普遍测试时，以是否达到此分数为标准确定算法推荐得分的正负，并据此计算出具体数值。详见使用说明。">
+			<span>期望正确率：</span>
+			<input type="number" id="set-exsimi" min="1" step="1" max="99" onchange="set_exSimi(parseInt($('#set-exsimi').val()), true, true);">
+		</div>
+		<div title="请输入一个整数。默认为5，最小为0，最大为10。解释：计算总相似度时，会依照此数对宽松算法和严格算法加权平均，越小越趋向于宽松，越大越趋向于严格。详见使用说明。">
+			<span>相似度算法偏好：</span>
+			<span><span id="set-prs-num">5</span>宽松(0)<input type="range" id="set-prstrict" min="0" max="10" step="1" oninput="set_prStrict(parseInt($('#set-prstrict').val()), true, true);">严格(10)</span>
+		</div>
 	</div>
 	<div id="__error"></div>
 	<footer></footer>
 	<script src="Lib/footer.js"></script>
 	<script src="Lib/error.js"></script>
 	<script src="dist/init.js"></script>
-	<script src="dist/config.js"></script>
+	<script src="dist/similarity.js"></script>
 	<script src="dist/display.js"></script>
 	<script src="dist/question.js"></script>
 	<script src="dist/convert.js"></script>
-	<script src="dist/similarity.js"></script>
+	<script src="dist/config.js"></script>
 	<script src="dist/task.js"></script>
 	<script src="dist/file.js"></script>
+	<script src="dist/review.js"></script>
 	<script src="dist/recite.js"></script>
 </body>
 </html>
