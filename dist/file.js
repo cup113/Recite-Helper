@@ -47,7 +47,7 @@ function file_upload_confirm() {
             read_rhp(file, readend);
         }
         else {
-            console.warn(file.name + ": Extension name = ".concat(ext, ", not 'txt' or 'rhp': Read failed."));
+            Err.error_display(file.name + ": \u6269\u5C55\u540D\u4E3A".concat(ext, "\uFF0C\u800C\u4E0D\u662Ftxt\u6216rhp\uFF0C\u4E0D\u4E88\u8BFB\u5165\u3002"), 4000, "ℹ");
             readend();
         }
     }

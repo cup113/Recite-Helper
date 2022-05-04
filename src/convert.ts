@@ -1,4 +1,5 @@
 /// <reference path="../src/question.ts"/>
+/// <reference path="../src/error.d.ts"/>
 
 function get_file_extension(filename: string) {
 	var last_dot = filename.lastIndexOf("."),
@@ -38,11 +39,11 @@ function read_txt(textfile: File, onreadend: () => any = ()=>(0)) {
 		questions.push(new Question(t.substring(0, firstlf), t.substring(firstlf + 1)));
 	}
 	if (errCount > 0) {
-		console.warn(filename + ": Format error * " + errCount.toString());
+		Err.error_display(filename + ": 共 " + errCount.toString() + " 个格式错误 * ", 8000, "⚠");
 	}
 	onreadend();
 	};
-	reader.onerror = function() {console.warn(filename + ": Read file failed."); onreadend();};
+	reader.onerror = function() {Err.error_display(filename + ": 读取文件失败。可能是没有权限、被占用或被移动。"); onreadend();};
 }
 
 function generate_txt() {
@@ -91,7 +92,8 @@ function read_rhp(rhpfile: File, onreadend: () => any = ()=>(0)) {
 	reader.readAsText(rhpfile);
 	reader.onload = function () {
 	var content = "",
-	tclen = (reader.result as string).length;
+	tclen = (reader.result as string).length,
+	errCount = 0;
 	// CRLF/CR->LF
 	for (let i=0; i<tclen; i++) {
 		var ch = (reader.result as string)[i];
@@ -105,7 +107,7 @@ function read_rhp(rhpfile: File, onreadend: () => any = ()=>(0)) {
 	tempstr = "",
 	questionNow = new Question();
 	var version = parseInt(lines[0].substring(2));
-	if (isNaN(version)) console.warn(filename + ": Version declareation error.");
+	if (isNaN(version)) Err.error_display(filename + ": 版本声明错误", 6000, "⚠");
 	for (let i=1; i<lines.length; i++) {
 		let l = lines[i];
 		if (l.length === 0) break;
@@ -125,7 +127,7 @@ function read_rhp(rhpfile: File, onreadend: () => any = ()=>(0)) {
 		else if (first_ch == 'e') {
 			let arr = tempstr.split(" ");
 			if (arr.length < 3) {
-				console.error("Length should be not less than 3.");
+				++errCount;
 				continue;
 			}
 			if (isNaN(parseInt(arr[0]))) arr[0] = '0';
@@ -138,7 +140,10 @@ function read_rhp(rhpfile: File, onreadend: () => any = ()=>(0)) {
 			tempstr = "";
 		}
 	}
+	if (errCount > 0) {
+		Err.error_display(filename + ": 共 " + errCount.toString() + " 个格式错误 * ", 8000, "⚠");
+	}
 	onreadend();
 	};
-	reader.onerror = function() {console.warn(filename + ": Read file failed."); onreadend();};
+	reader.onerror = function() {Err.error_display(filename + ": 读取文件失败。可能是没有权限、被占用或被移动。")};
 }

@@ -58,7 +58,7 @@ function file_upload_confirm() {
 			read_rhp(file, readend);
 		}
 		else {
-			console.warn(file.name + `: Extension name = ${ext}, not 'txt' or 'rhp': Read failed.`);
+			Err.error_display(file.name + `: 扩展名为${ext}，而不是txt或rhp，不予读入。`, 4000, "ℹ");
 			readend();
 		}
 	}

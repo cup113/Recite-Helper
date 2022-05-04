@@ -22,8 +22,8 @@ function update_qnum() {
  */
 
 function update_task_question(_id: number) {
-	if (_id >= 50 && _id <= 70) {
-		console.warn("暂不支持50以上的问题编辑");
+	if (_id >= 50) {
+		if (_id === 50) Err.error_display("暂不支持50以上的问题编辑", 8000, "⚠");
 		return;
 	}
 	let q = questions[_id];

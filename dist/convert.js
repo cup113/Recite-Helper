@@ -1,4 +1,5 @@
 /// <reference path="../src/question.ts"/>
+/// <reference path="../src/error.d.ts"/>
 function get_file_extension(filename) {
     var last_dot = filename.lastIndexOf("."), ext = filename.substring(last_dot + 1);
     return ext;
@@ -36,11 +37,11 @@ function read_txt(textfile, onreadend) {
             questions.push(new Question(t.substring(0, firstlf), t.substring(firstlf + 1)));
         }
         if (errCount > 0) {
-            console.warn(filename + ": Format error * " + errCount.toString());
+            Err.error_display(filename + ": 共 " + errCount.toString() + " 个格式错误 * ", 8000, "⚠");
         }
         onreadend();
     };
-    reader.onerror = function () { console.warn(filename + ": Read file failed."); onreadend(); };
+    reader.onerror = function () { Err.error_display(filename + ": 读取文件失败。可能是没有权限、被占用或被移动。"); onreadend(); };
 }
 function generate_txt() {
     var result = "";
@@ -87,7 +88,7 @@ function read_rhp(rhpfile, onreadend) {
     var reader = new FileReader(), filename = rhpfile.name;
     reader.readAsText(rhpfile);
     reader.onload = function () {
-        var content = "", tclen = reader.result.length;
+        var content = "", tclen = reader.result.length, errCount = 0;
         // CRLF/CR->LF
         for (var i = 0; i < tclen; i++) {
             var ch = reader.result[i];
@@ -102,7 +103,7 @@ function read_rhp(rhpfile, onreadend) {
         var lines = content.split("\n"), tempstr = "", questionNow = new Question();
         var version = parseInt(lines[0].substring(2));
         if (isNaN(version))
-            console.warn(filename + ": Version declareation error.");
+            Err.error_display(filename + ": 版本声明错误", 6000, "⚠");
         for (var i = 1; i < lines.length; i++) {
             var l = lines[i];
             if (l.length === 0)
@@ -124,7 +125,7 @@ function read_rhp(rhpfile, onreadend) {
             else if (first_ch == 'e') {
                 var arr = tempstr.split(" ");
                 if (arr.length < 3) {
-                    console.error("Length should be not less than 3.");
+                    ++errCount;
                     continue;
                 }
                 if (isNaN(parseInt(arr[0])))
@@ -139,7 +140,10 @@ function read_rhp(rhpfile, onreadend) {
                 tempstr = "";
             }
         }
+        if (errCount > 0) {
+            Err.error_display(filename + ": 共 " + errCount.toString() + " 个格式错误 * ", 8000, "⚠");
+        }
         onreadend();
     };
-    reader.onerror = function () { console.warn(filename + ": Read file failed."); onreadend(); };
+    reader.onerror = function () { Err.error_display(filename + ": 读取文件失败。可能是没有权限、被占用或被移动。"); };
 }
