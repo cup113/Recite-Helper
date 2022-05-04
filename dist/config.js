@@ -82,28 +82,41 @@ function init_localstorage() {
     console.log("Recite Helper\nVersion " + version + "\nJason M. Li");
 }
 function check_config() {
+    var tempInd = [];
     for (var i = 0; i < questions.length; i++) {
         var q = questions[i];
         if (q.get_score() < crScore)
-            indexesNow.push(i);
+            tempInd.push(i);
     }
-    if (indexesNow.length > 0) {
+    if (tempInd.length > 0) {
         coAllPassed = false;
         laAllPassed = false;
+        indexesNow = tempInd;
+        hide("#rs-pass");
+        show("#rs-score");
         return;
     }
     for (var i = 0; i < questions.length; i++) {
         var q = questions[i];
         if (!q.get_passed())
-            indexesNow.push(i);
+            tempInd.push(i);
     }
-    if (indexesNow.length > 0) {
-        coAllPassed = true;
+    show("#rs-pass");
+    hide("#rs-score");
+    coAllPassed = true;
+    if (tempInd.length > 0) {
         laAllPassed = false;
+        indexesNow = tempInd;
     }
     else {
-        coAllPassed = true;
         laAllPassed = true;
+    }
+}
+function lines_to_paras(text, $target) {
+    var lines = text.split("\n");
+    for (var _i = 0, lines_1 = lines; _i < lines_1.length; _i++) {
+        var l = lines_1[_i];
+        $("<p></p>").text(l).appendTo($target);
     }
 }
 init_localstorage();

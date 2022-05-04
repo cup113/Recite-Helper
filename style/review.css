@@ -32,7 +32,7 @@
 .rev-tr>span:nth-child(3) {
 	flex-basis: 4em;
 	flex-grow: 1;
-	color: green;
+	color: #006400;
 }
 
 .rev-tr>span:nth-child(4) {

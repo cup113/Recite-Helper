@@ -38,4 +38,7 @@ class Question {
 	public add_score(scoreAdd: number) {
 		this.set_score(this.score + scoreAdd);
 	}
+	public add_answered() {
+		this.set_answeredTimes(this.answeredTimes + 1);
+	}
 }

@@ -85,27 +85,38 @@ function init_localstorage() {
 }
 
 function check_config() {
+	var tempInd: number[] = [];
 	for (let i=0; i<questions.length; i++) {
 		let q = questions[i];
-		if (q.get_score() < crScore) indexesNow.push(i);
+		if (q.get_score() < crScore) tempInd.push(i);
 	}
-	if (indexesNow.length > 0) {
+	if (tempInd.length > 0) {
 		coAllPassed = false;
 		laAllPassed = false;
+		indexesNow = tempInd;
+		hide("#rs-pass");
+		show("#rs-score");
 		return;
 	}
 	for (let i=0; i<questions.length; i++) {
 		let q = questions[i];
-		if (!q.get_passed()) indexesNow.push(i);
+		if (!q.get_passed()) tempInd.push(i);
 	}
-	if (indexesNow.length > 0) {
-		coAllPassed = true;
+	show("#rs-pass");
+	hide("#rs-score");
+	coAllPassed = true;
+	if (tempInd.length > 0) {
 		laAllPassed = false;
+		indexesNow = tempInd;
 	}
 	else {
-		coAllPassed = true;
 		laAllPassed = true;
 	}
+}
+
+function lines_to_paras(text: string, $target: JQuery<HTMLElement>) {
+	var lines = text.split("\n");
+	for (let l of lines) $("<p></p>").text(l).appendTo($target);
 }
 
 init_localstorage();

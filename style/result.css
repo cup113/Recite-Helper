@@ -30,14 +30,19 @@
 	width: 7em;
 }
 
-#result>p {
+#result>div {
     margin: 8px 0;
 }
 
 #rs-cor, #rs-ans {
 	font-size: 1.5em;
 	text-align: left;
+	font-family: monospace, Consolas, "Courier new", "黑体", "等线", "宋体";
+}
+
+#rs-cor>p, #rs-ans>p {
 	text-indent: 2em;
+	margin: 4px 0;
 }
 
 #rs-simi {

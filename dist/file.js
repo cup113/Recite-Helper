@@ -1,5 +1,6 @@
 /// <reference path="../src/convert.ts"/>
 /// <reference path="../src/config.ts"/>
+/// <reference path="../src/task.ts"/>
 function file_upload_change() {
     var files = $("#file-upload-file")[0].files, filenames = [];
     for (var i = 0; i < files.length; i++) {
@@ -22,7 +23,11 @@ function file_upload_confirm() {
             round = 1;
             check_config();
             update_stage();
-            console.log(indexesNow);
+            var i = parseInt($("#task-qnum").text());
+            for (; i < questions.length; i++) {
+                update_task_question(i);
+            }
+            update_qnum();
         }
         else {
             $("#task-reading-process").text("\u8BFB\u5165\u4E2D(".concat(fileread, "/").concat(files.length, ")")).css("color", "black");
@@ -42,7 +47,7 @@ function file_upload_confirm() {
             read_rhp(file, readend);
         }
         else {
-            console.error("extension = ".concat(ext, ": failed."));
+            console.warn(file.name + ": Extension name = ".concat(ext, ", not 'txt' or 'rhp': Read failed."));
             readend();
         }
     }
@@ -56,5 +61,16 @@ function export_rhp() {
     $("<span></span>").appendTo($("<a></a>").attr({
         "href": URL.createObjectURL(rhpfile),
         "download": $("#title").text() + ".rhp"
+    })).trigger("click");
+}
+function export_txt() {
+    if (questions.length === 0) {
+        Err.error_display("暂时没有问题，无法导出");
+        return;
+    }
+    var txtfile = generate_txt();
+    $("<span></span>").appendTo($("<a></a>").attr({
+        "href": URL.createObjectURL(txtfile),
+        "download": $("#title").text() + ".txt"
     })).trigger("click");
 }

@@ -35,5 +35,8 @@ var Question = /** @class */ (function () {
     Question.prototype.add_score = function (scoreAdd) {
         this.set_score(this.score + scoreAdd);
     };
+    Question.prototype.add_answered = function () {
+        this.set_answeredTimes(this.answeredTimes + 1);
+    };
     return Question;
 }());

@@ -14,9 +14,7 @@
 	<link rel="stylesheet" href="Lib/file-upload.css">
 	<link rel="stylesheet" href="Lib/error.css">
 	<link rel="stylesheet" href="style/frame.css">
-	<link rel="stylesheet" href="style/board.css">
 	<link rel="stylesheet" href="style/recite.css">
-	<link rel="stylesheet" href="style/task.css">
 	<link rel="stylesheet" href="style/result.css">
 	<link rel="stylesheet" href="style/review.css">
 	<link rel="stylesheet" href="style/setting.css">
@@ -26,12 +24,12 @@
 <body>
 	<div id="board" class="section">
 		<span class="button-i" id="title" contenteditable="true">背诵</span>
-		<span id="stage">...</span>
+		<span id="stage">请导入问题</span>
 	</div>
 	<div id="nav" class="section">
 		<button type="button" class="button-d" onclick="start_review();">复习一下</button
 		><button type="button" class="button-d" onclick="start_recite();">开始背诵</button
-		><button type="button" class="button-d" onclick="show('#task');">设置任务</button
+		><button type="button" class="button-d" onclick="start_task();">设置任务</button
 		><button type="button" class="button-d" onclick="show('#settings');">常规设置</button><button type="button" class="button-d" onclick="export_rhp();">导出进度</button
 		>
 	</div>
@@ -41,7 +39,7 @@
 		<div id="review-table">
 			<div id="review-thead">
 				<div class="rev-tr">
-					<span>编号</span>
+					<span>id</span>
 					<span>问题</span>
 					<span>标答</span>
 					<span>积分</span>
@@ -53,19 +51,22 @@
 		</div>
 	</div>
 	<div id="recite" class="section none-display">
-		<h2>背诵主题</h2>
-		<p>
-			<span id="rc-qspan">问题：<span id="rc-ques"></span></span>
-			<span id="rc-note"><span>id：<span id="rc-qid">0</span></span><span>当前积分：<span id="rc-scnow">0</span>（<span id="rc-screq">10</span>分通过）</span></span>
+		<h2>背诵</h2>
+		<div>
+			<div id="rc-ques"></div>
+			<div id="rc-note"><span>问题id：<span id="rc-qid">0</span></span><span>当前积分：<span id="rc-scnow">0</span>（<span id="rc-screq">10</span>分通过）</span></div>
+		</div>
+		<div>
+			<textarea id="rc-ans" placeholder="请作答..." tabindex="1"></textarea>
+		</div>
+		<p id="rc-submit">
+			<button type="button" class="button-d" onclick="pause_recite();" tabindex="3">中止 Pause ⏸</button>
+			<button type="button" class="button-d" onclick="submit_question();" tabindex="2">提交 submit ✔</button>
 		</p>
-		<p>
-			<textarea id="rc-ans" placeholder="请作答..."></textarea>
-		</p>
-		<p id="rc-submit"><button type="button" class="button-d" onclick="submit_question();">提交 submit ✔</button></p>
 	</div>
 	<div id="result" class="section none-display">
 		<h2>结果</h2>
-		<p id="rs-simi">
+		<div id="rs-simi">
 			相似度：<span id="rs-simi-ttl" style="color: black">00.00%</span>
 			<span onclick="see_simi_detail();" id="rs-simi-dswitch" style="--rotate: 0deg;">▶</span>
 			<span id="rs-simi-detail" class="none-display">
@@ -73,10 +74,10 @@
 				<br>
 				严格比较（编辑距离）：<span id="rs-simi-strict">00.00%</span>
 			</span>
-		</p>
-		<p id="rs-note">注：下列第一行表示正确答案，即标答（绿色），第二行表示作答</p>
-		<p id="rs-cor"></p>
-		<p id="rs-ans"></p>
+		</div>
+		<div id="rs-note">注：下列第一行表示正确答案，即标答（绿色），第二行表示作答</div>
+		<div id="rs-cor"></div>
+		<div id="rs-ans"></div>
 		<div id="rs-score">
 			评分(最低-10，最高10)：<input type="number" min="-10" max="10" step="1" placeholder="算法推荐: 0" id="rs-score-num">
 		</div>
@@ -91,7 +92,7 @@
 		<div id="rs-next-btn"><button type="button" class="button-d" onclick="submit_result();">下一题 Next ➡</button></div>
 	</div>
 	<div id="task" class="fullscreen none-display">
-		<button type="button" class="button-d close-icon-fullscreen"><img src="img/close.svg" alt="关闭" onclick="hide('#task')"></button>
+		<button type="button" class="button-d close-icon-fullscreen"><img src="img/close.svg" alt="关闭" onclick="close_task();"></button>
 		<h2>任务设置</h2>
 		<div class="file-upload">
 			<input type="file" id="file-upload-file" multiple accept=".txt,.rhp" onchange="file_upload_change();">
@@ -106,12 +107,30 @@
 			</div>
 		</div>
 		<div id="task-reading">
-			<span id="task-reading-process" style="color: black">...</span>
+			<span id="task-reading-process" style="color: black">请导入</span>
 			<button type="button" id="task-upload-confirm" class="button-d" onclick="file_upload_confirm();">确定导入</button>
 		</div>
 		<div id="task-export">
 			<button type="button" class="button-d" onclick="clear_questions();">清空进度</button>
 			<button type="button" class="button-d" onclick="export_rhp();">导出进度为rhp文件</button>
+			<button type="button" class="button-d" onclick="export_txt();">导出为txt文件</button>
+		</div>
+		<div id="task-setq">
+			<div id="task-setq-num">
+				当前共 <span id="task-qnum">0</span> 个问题
+			</div>
+			<div id="task-setq-head">
+				<div class="task-setq-r">
+					<span>id</span>
+					<span>问题</span>
+					<span>标答</span>
+					<span>操作</span>
+				</div>
+			</div>
+			<div id="task-setq-body"></div>
+			<div id="task-setq-addq">
+				<button type="button" class="button-d" onclick="task_addq();">新增问题 +</button>
+			</div>
 		</div>
 	</div>
 	<div id="stat" class="section none-display">

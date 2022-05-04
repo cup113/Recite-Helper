@@ -10,10 +10,10 @@ function get_file_extension(filename) {
  */
 function read_txt(textfile, onreadend) {
     if (onreadend === void 0) { onreadend = function () { return (0); }; }
-    var reader = new FileReader();
+    var reader = new FileReader(), filename = textfile.name;
     reader.readAsText(textfile);
     reader.onload = function () {
-        var txtContent = "", tclen = reader.result.length;
+        var txtContent = "", tclen = reader.result.length, errCount = 0;
         // CRLF/CR->LF
         for (var i = 0; i < tclen; i++) {
             var ch = reader.result[i];
@@ -30,21 +30,34 @@ function read_txt(textfile, onreadend) {
             var t = tquests_1[_i];
             var firstlf = t.indexOf("\n");
             if (firstlf === -1) {
-                console.error("File format error");
+                ++errCount;
                 continue;
             }
             questions.push(new Question(t.substring(0, firstlf), t.substring(firstlf + 1)));
         }
+        if (errCount > 0) {
+            console.warn(filename + ": Format error * " + errCount.toString());
+        }
         onreadend();
     };
-    reader.onerror = function () { console.log("Read file failed."); onreadend(); };
+    reader.onerror = function () { console.warn(filename + ": Read file failed."); onreadend(); };
+}
+function generate_txt() {
+    var result = "";
+    for (var _i = 0, questions_1 = questions; _i < questions_1.length; _i++) {
+        var q = questions_1[_i];
+        result += q.get_quesText().split("\n").join("\r\n") + "\r\n";
+        result += q.get_corrAns().split("\n").join("\r\n") + "\r\n\r\n";
+    }
+    result = result.substring(0, result.length - 4);
+    return new Blob([result]);
 }
 /** Generate .rhp file from `questions`.
  * T(O(N)), M(O(2N))
  * @returns Blob Object
  */
 function generate_rhp() {
-    var result = "v 2\r\n";
+    var result = "v 3\r\n";
     var handle_lf = function (str) {
         var tlines = str.split("\n"), ret = "";
         for (var i = 0; i < tlines.length; i++) {
@@ -55,8 +68,8 @@ function generate_rhp() {
         }
         return ret;
     };
-    for (var _i = 0, questions_1 = questions; _i < questions_1.length; _i++) {
-        var q = questions_1[_i];
+    for (var _i = 0, questions_2 = questions; _i < questions_2.length; _i++) {
+        var q = questions_2[_i];
         result += "q " + handle_lf(q.get_quesText());
         result += "c " + handle_lf(q.get_corrAns());
         result += "o " + q.get_score().toString() + " " + (q.get_passed() ? "1" : "0") + " " + q.get_answeredTimes().toString() + "\r\n";
@@ -71,13 +84,25 @@ function generate_rhp() {
  */
 function read_rhp(rhpfile, onreadend) {
     if (onreadend === void 0) { onreadend = function () { return (0); }; }
-    var reader = new FileReader();
+    var reader = new FileReader(), filename = rhpfile.name;
     reader.readAsText(rhpfile);
     reader.onload = function () {
-        var lines = reader.result.split("\r\n"), tempstr = "", questionNow = new Question();
+        var content = "", tclen = reader.result.length;
+        // CRLF/CR->LF
+        for (var i = 0; i < tclen; i++) {
+            var ch = reader.result[i];
+            if (ch == '\r') {
+                content += '\n';
+                if (i + 1 < tclen && reader.result[i + 1] == '\n')
+                    ++i;
+            }
+            else
+                content += ch;
+        }
+        var lines = content.split("\n"), tempstr = "", questionNow = new Question();
         var version = parseInt(lines[0].substring(2));
         if (isNaN(version))
-            console.error("Version is not a number.");
+            console.warn(filename + ": Version declareation error.");
         for (var i = 1; i < lines.length; i++) {
             var l = lines[i];
             if (l.length === 0)
@@ -85,7 +110,7 @@ function read_rhp(rhpfile, onreadend) {
             var first_ch = l[0];
             l = l.substring(2, l.length);
             if (first_ch == '-')
-                tempstr += l;
+                tempstr += "\n" + l;
             else if (first_ch == 'q')
                 tempstr = l;
             else if (first_ch == 'c') {
@@ -116,5 +141,5 @@ function read_rhp(rhpfile, onreadend) {
         }
         onreadend();
     };
-    reader.onerror = function () { console.log("Read file failed."); onreadend(); };
+    reader.onerror = function () { console.warn(filename + ": Read file failed."); onreadend(); };
 }

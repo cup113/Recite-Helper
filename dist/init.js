@@ -1,3 +1,3 @@
 /// <reference path="../Lib/footer.js"/>
-var version = "0.4.0 (Debug)";
-generate_footer(version, "https://github.com/cup113/Recite-Helper/", true, false, 2022, 2022);
+var version = "1.0.0 (Alpha)";
+generate_footer(version, "https://github.com/cup113/Recite-Helper/", true, true, 2022, 2022);

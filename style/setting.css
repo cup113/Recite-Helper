@@ -23,3 +23,58 @@
 #set-prstrict {
 	width: 200px;
 }
+
+#task-reading, #task-export {
+	font-size: 1.5em;
+}
+
+#task-export {
+	margin: 8px 0;
+}
+
+#task-export>button {
+	margin: 0 16px;
+}
+
+.task-setq-r {
+	display: flex;
+	align-items: center;
+	text-align: center;
+	border: 1px solid black;
+	column-gap: 4px;
+	margin: 4px 0;
+}
+
+.task-setq-r>span:nth-child(1) {
+	width: 1.5em;
+}
+
+.task-setq-r>*:nth-child(2), .task-setq-r>*:nth-child(3) {
+	width: 4em;
+	flex-grow: 1;
+}
+
+.task-setq-r>textarea {
+	word-break: break-word;
+	min-height: 1em;
+	resize: vertical;
+	font-family: unset;
+	color: unset;
+	text-align: center;
+}
+
+.task-setq-r>textarea:disabled {
+	background-color: initial;
+	color: initial;
+}
+
+.task-setq-r>span:nth-child(4) {
+	min-width: 3em;
+	max-width: 6em;
+}
+
+.task-setq-r .button-d {
+	padding: 0 4px;
+	margin: 0 4px;
+	border-width: 1px;
+}

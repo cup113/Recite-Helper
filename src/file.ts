@@ -1,5 +1,6 @@
 /// <reference path="../src/convert.ts"/>
 /// <reference path="../src/config.ts"/>
+/// <reference path="../src/task.ts"/>
 
 function file_upload_change() {
 	var files = ($("#file-upload-file")[0] as HTMLInputElement).files,
@@ -32,7 +33,11 @@ function file_upload_confirm() {
 			round = 1;
 			check_config();
 			update_stage();
-			console.log(indexesNow);
+			let i = parseInt($("#task-qnum").text());
+			for (; i<questions.length; i++) {
+				update_task_question(i);
+			}
+			update_qnum();
 		}
 		else {
 			$("#task-reading-process").text(`读入中(${fileread}/${files.length})`).css("color", "black");
@@ -53,7 +58,7 @@ function file_upload_confirm() {
 			read_rhp(file, readend);
 		}
 		else {
-			console.error(`extension = ${ext}: failed.`);
+			console.warn(file.name + `: Extension name = ${ext}, not 'txt' or 'rhp': Read failed.`);
 			readend();
 		}
 	}
@@ -68,5 +73,17 @@ function export_rhp() {
 	$("<span></span>").appendTo($("<a></a>").attr({
 		"href": URL.createObjectURL(rhpfile),
 		"download": $("#title").text() + ".rhp",
+	})).trigger("click");
+}
+
+function export_txt() {
+	if (questions.length === 0) {
+		Err.error_display("暂时没有问题，无法导出");
+		return;
+	}
+	var txtfile = generate_txt();
+	$("<span></span>").appendTo($("<a></a>").attr({
+		"href": URL.createObjectURL(txtfile),
+		"download": $("#title").text() + ".txt",
 	})).trigger("click");
 }

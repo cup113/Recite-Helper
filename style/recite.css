@@ -1,13 +1,17 @@
-#recite>p:not(#rc-submit) {
+#recite>div {
     font-size: 1.5rem;
     text-align: left;
     padding: 4px 4px;
     margin: 8px 0;
 }
 
-#rc-qspan, #rc-note {
-	display: block;
+#rc-note {
 	text-indent: 3rem;
+}
+
+#rc-ques>p {
+	text-indent: 2em;
+	margin: 4px 0;
 }
 
 #rc-note {
@@ -28,15 +32,19 @@
 	resize: vertical;
 	min-height: 2em;
 	height: 3em;
-	width: calc(100% - 16px);
-	margin: 0 4px;
-	text-indent: 2em;
+	width: calc(100% - 3em);
+	margin-left: 2em;
 }
 
 #rc-submit {
 	background-color: white;
 	text-align: right;
 	font-size: 2em;
+}
+
+#rc-submit>button:nth-child(1) {
+	font-size: 0.75em;
+	margin-right: 2em;
 }
 
 #rc-submit>button {

@@ -1,5 +1,5 @@
 body {
-	padding: 0;
+	padding: 0 0 3rem 0;
 	margin: 0;
 }
 
@@ -11,4 +11,23 @@ body {
 
 #task {
 	text-align: center;
+}
+
+#board {
+	font-size: 2rem;
+}
+
+#title {
+	background-color: #eeffcc;
+	font-size: 1.5em;
+}
+
+#nav {
+	font-size: 2rem;
+}
+
+#nav>.button-d {
+	font-size: 1em;
+	margin: 4px 0;
+	background-color: greenyellow;
 }
