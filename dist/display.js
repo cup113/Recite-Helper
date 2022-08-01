@@ -1,3 +1,4 @@
+"use strict";
 function show(selector) {
     $(selector).removeClass("none-display");
 }

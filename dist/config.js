@@ -1,3 +1,4 @@
+"use strict";
 /// <reference path="../src/question.ts"/>
 /// <reference path="../src/init.d.ts"/>
 /// <reference path="../src/error.d.ts"/>
@@ -5,9 +6,7 @@ var crScore, // Common test required score
 exSimi, // Expected similatiry (1~99)
 prStrict, // Prefer strict (max: 10) or relaxed (min: 0) similarity algorithm
 qPointer = 0, isReciting = false, coAllPassed = false, laAllPassed = false, round = 1;
-function set_crScore(_crScore, update, fromHTML) {
-    if (update === void 0) { update = false; }
-    if (fromHTML === void 0) { fromHTML = false; }
+function set_crScore(_crScore, update = false, fromHTML = false) {
     if (!(_crScore > 0)) {
         _crScore = 15;
         Err.error_display("普遍测试所需分数必须是大于0的整数。");
@@ -19,9 +18,7 @@ function set_crScore(_crScore, update, fromHTML) {
     if (!fromHTML)
         $("#set-crscore").val(crScore.toString());
 }
-function set_exSimi(_exSimi, update, fromHTML) {
-    if (update === void 0) { update = false; }
-    if (fromHTML === void 0) { fromHTML = false; }
+function set_exSimi(_exSimi, update = false, fromHTML = false) {
     if (!(_exSimi > 0 && _exSimi < 100)) {
         _exSimi = 60;
         Err.error_display("期望正确率必须是一个1~99的整数。");
@@ -32,9 +29,7 @@ function set_exSimi(_exSimi, update, fromHTML) {
     if (!fromHTML)
         $("#set-exsimi").val(exSimi.toString());
 }
-function set_prStrict(_prStrict, update, fromHTML) {
-    if (update === void 0) { update = false; }
-    if (fromHTML === void 0) { fromHTML = false; }
+function set_prStrict(_prStrict, update = false, fromHTML = false) {
     if (!(_prStrict >= 0 && _prStrict <= 10)) {
         _prStrict = 5;
         Err.error_display("相似度偏好必须是一个0~10的整数。");
@@ -83,8 +78,8 @@ function init_localstorage() {
 }
 function check_config() {
     var tempInd = [];
-    for (var i = 0; i < questions.length; i++) {
-        var q = questions[i];
+    for (let i = 0; i < questions.length; i++) {
+        let q = questions[i];
         if (q.get_score() < crScore)
             tempInd.push(i);
     }
@@ -96,8 +91,8 @@ function check_config() {
         show("#rs-score");
         return;
     }
-    for (var i = 0; i < questions.length; i++) {
-        var q = questions[i];
+    for (let i = 0; i < questions.length; i++) {
+        let q = questions[i];
         if (!q.get_passed())
             tempInd.push(i);
     }
@@ -114,9 +109,7 @@ function check_config() {
 }
 function lines_to_paras(text, $target) {
     var lines = text.split("\n");
-    for (var _i = 0, lines_1 = lines; _i < lines_1.length; _i++) {
-        var l = lines_1[_i];
+    for (let l of lines)
         $("<p></p>").text(l).appendTo($target);
-    }
 }
 init_localstorage();

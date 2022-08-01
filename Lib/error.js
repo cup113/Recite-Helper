@@ -1,3 +1,4 @@
+"use strict";
 var Err;
 (function (Err) {
     var $error = $("#__error"), errCount = 0;
@@ -17,9 +18,7 @@ var Err;
      * @param text 错误内容
      * @param duration 持续时间(ms)
      */
-    function error_display(text, duration, icon) {
-        if (duration === void 0) { duration = 6000; }
-        if (icon === void 0) { icon = "❌"; }
+    function error_display(text, duration = 6000, icon = "❌") {
         $("<p></p>").attr({ "id": "__error-item-" + (++errCount).toString(), "class": "__error-item" })
             .css("opacity", "1")
             .append($("<span></span>").text(icon))

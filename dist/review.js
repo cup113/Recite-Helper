@@ -1,3 +1,4 @@
+"use strict";
 /// <reference path="../src/display.ts"/>
 /// <reference path="../src/error.d.ts"/>
 /// <reference path="../src/config.ts"/>
@@ -10,8 +11,8 @@ function start_review() {
     else {
         show("#review");
         var $table = $("#review-tbody");
-        for (var i = 0; i < questions.length; i++) {
-            var q = questions[i];
+        for (let i = 0; i < questions.length; i++) {
+            let q = questions[i];
             $("<div></div>").addClass("rev-tr")
                 .append($("<span></span>").text(i.toString()))
                 .append($("<span></span>").text(q.get_quesText()))

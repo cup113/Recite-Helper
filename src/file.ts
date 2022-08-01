@@ -3,7 +3,7 @@
 /// <reference path="../src/task.ts"/>
 
 function file_upload_change() {
-	var files = ($("#file-upload-file")[0] as HTMLInputElement).files,
+	var files = ($("#file-upload-file")[0] as HTMLInputElement).files as FileList,
 	filenames: string[] = [];
 	for (let i=0; i<files.length; i++) {
 		filenames.push(files[i].name);
@@ -17,7 +17,7 @@ function file_upload_change() {
 }
 
 function file_upload_confirm() {
-	var files = ($("#file-upload-file")[0] as HTMLInputElement).files,
+	var files = ($("#file-upload-file")[0] as HTMLInputElement).files as FileList,
 	$process = $("#task-reading-process");
 	if (files.length === 0) {
 		$process.text("没有上传文件！").css("color", "red");

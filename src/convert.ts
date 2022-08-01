@@ -8,8 +8,8 @@ function get_file_extension(filename: string) {
 }
 
 /** Read .txt file into `questions`
- * 
- * T(O(N)), M(O(3N)) N=textfile.size
+ *
+ * T(O(N)), M(3N) N=textfile.size
  * @param textfile file object (extension: txt)
  */
 function read_txt(textfile: File, onreadend: () => any = ()=>(0)) {
@@ -57,7 +57,7 @@ function generate_txt() {
 }
 
 /** Generate .rhp file from `questions`.
- * T(O(N)), M(O(2N))
+ * T(O(N)), M(2N)
  * @returns Blob Object
  */
 function generate_rhp(): Blob {

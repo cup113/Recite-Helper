@@ -1,3 +1,4 @@
+"use strict";
 /// <reference path="../src/question.ts"/>
 /// <reference path="../src/display.ts"/>
 /// <reference path="../src/similarity.ts"/>
@@ -74,7 +75,7 @@ function see_simi_detail() {
 }
 function submit_result() {
     if (!coAllPassed) {
-        var scoreAdd = parseInt($("#rs-score-num").val());
+        let scoreAdd = parseInt($("#rs-score-num").val());
         if (isNaN(scoreAdd) || scoreAdd < -10 || scoreAdd > 10) {
             Err.error_display("请输入-10~10之间的整数！");
             return;
@@ -84,7 +85,7 @@ function submit_result() {
         }
     }
     else if (!laAllPassed) {
-        var pass1 = document.getElementById("rs-pass-1").checked, pass0 = document.getElementById("rs-pass-0").checked;
+        let pass1 = document.getElementById("rs-pass-1").checked, pass0 = document.getElementById("rs-pass-0").checked;
         if ((!pass1) && (!pass0)) {
             Err.error_display("请做出选择");
             return;
@@ -102,8 +103,8 @@ function submit_result() {
     }
     else {
         if (!coAllPassed) {
-            var tempIndexes = [];
-            for (var i = 0; i < indexesNow.length; i++) {
+            let tempIndexes = [];
+            for (let i = 0; i < indexesNow.length; i++) {
                 if (questions[indexesNow[i]].get_score() < crScore)
                     tempIndexes.push(indexesNow[i]);
             }
@@ -113,7 +114,7 @@ function submit_result() {
             if (tempIndexes.length === 0) {
                 hide("#rs-score");
                 show("#rs-pass");
-                for (var i = 0; i < questions.length; i++) {
+                for (let i = 0; i < questions.length; i++) {
                     if (!questions[i].get_passed())
                         indexesNow.push(i);
                 }
@@ -122,8 +123,8 @@ function submit_result() {
             }
         }
         if (coAllPassed && (!laAllPassed)) {
-            var tempIndexes = [];
-            for (var i = 0; i < indexesNow.length; i++) {
+            let tempIndexes = [];
+            for (let i = 0; i < indexesNow.length; i++) {
                 if (!questions[indexesNow[i]].get_passed())
                     tempIndexes.push(indexesNow[i]);
             }

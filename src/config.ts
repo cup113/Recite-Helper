@@ -75,9 +75,9 @@ function init_localstorage() {
 		localStorage.setItem("RH_exSimi", "60");
 		localStorage.setItem("RH_prStrict", "5");
 	}
-	var _crScore = parseInt(localStorage.getItem("RH_crScore")),
-	_exSimi = parseInt(localStorage.getItem("RH_exSimi")),
-	_prStrict = parseInt(localStorage.getItem("RH_prStrict"));
+	var _crScore = parseInt(localStorage.getItem("RH_crScore") as string),
+	_exSimi = parseInt(localStorage.getItem("RH_exSimi") as string),
+	_prStrict = parseInt(localStorage.getItem("RH_prStrict") as string);
 	set_crScore(_crScore);
 	set_exSimi(_exSimi);
 	set_prStrict(_prStrict);

@@ -16,7 +16,7 @@ function next_question() {
 	}
 	isReciting = true;
 	$("#rc-ans").removeAttr("disabled").val("");
-	document.getElementById("rc-ans").focus();
+	(document.getElementById("rc-ans") as HTMLTextAreaElement).focus();
 	var qi = indexesNow[qPointer],
 	questionNow = questions[qi];
 	lines_to_paras(questionNow.get_quesText(), $("#rc-ques").html(""));
@@ -67,16 +67,16 @@ function submit_question() {
 	$("#rs-simi-strict").text((simiStrict * 100).toFixed(2) + "%");
 	if (!coAllPassed) {
 		$("#rs-score-num").attr("placeholder", "算法推荐: " + recScore.toFixed(0)).val(recScore.toFixed(0));
-		document.getElementById("rs-score-num").focus();
+		(document.getElementById("rs-score-num") as HTMLInputElement).focus();
 	}
 	else if (!laAllPassed) {
-		document.getElementById("rs-pass-1").focus();
+		(document.getElementById("rs-pass-1") as HTMLInputElement).focus();
 		if (simiTtl >= 0.995) {
 			(document.getElementById("rs-pass-1") as HTMLInputElement).checked = true;
 		}
 		else if (simiTtl * 100 < exSimi) {
 			(document.getElementById("rs-pass-0") as HTMLInputElement).checked = true;
-			document.getElementById("rs-pass-0").focus();
+			(document.getElementById("rs-pass-0") as HTMLInputElement).focus();
 		}
 	}
 }

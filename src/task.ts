@@ -37,7 +37,7 @@ function update_task_question(_id: number) {
 				Err.error_display("已经有问题处于编辑状态，请先提交上一个问题的编辑。");
 			}
 			else {
-				let _id = event.target.parentElement.parentElement.children[0].id;
+				let _id = ((event.target.parentElement as HTMLElement).parentElement as HTMLElement).children[0].id;
 				task_start_edit(parseInt(_id.substring(_id.lastIndexOf("-") + 1)));
 			}
 		}))
@@ -45,7 +45,7 @@ function update_task_question(_id: number) {
 }
 
 function task_edit_submit(_id: number) {
-	var divr = document.getElementById("task-setq-active"),
+	var divr = document.getElementById("task-setq-active") as HTMLElement,
 	quesNow = questions[_id];
 	divr.id = "";
 	quesNow.set_quesText($(divr.children[1] as HTMLElement).attr("disabled", "disabled").val() as string);
@@ -56,7 +56,7 @@ function task_edit_submit(_id: number) {
 				Err.error_display("已经有问题处于编辑状态，请先提交上一个问题的编辑。");
 			}
 			else {
-				let _id = event.target.parentElement.parentElement.children[0].id;
+				let _id =     ((event.target.parentElement as HTMLElement).parentElement as HTMLElement).children[0].id;
 				task_start_edit(parseInt(_id.substring(_id.lastIndexOf("-") + 1)));
 			}
 		})
@@ -82,12 +82,12 @@ function task_delete(_id: number) {
 }
 
 function task_start_edit(_id: number) {
-	var divr = document.getElementById("task-setq-body").children[_id];
+	var divr = (document.getElementById("task-setq-body") as HTMLElement).children[_id];
 	divr.id = "task-setq-active";
 	$([divr.children[1] as HTMLElement, divr.children[2] as HTMLElement]).removeAttr("disabled");
 	$(divr.children[3] as HTMLElement).html("")
-	.append($("<button></button>").addClass("button-d").attr("type", "button").text("删除").on("click", (event) => {let _id = event.target.parentElement.parentElement.children[0].id; task_delete(parseInt(_id.substring(_id.lastIndexOf("-") + 1)));}))
-	.append($("<button></button>").addClass("button-d").attr("type", "button").text("完成").on("click", (event) => {let _id = event.target.parentElement.parentElement.children[0].id; task_edit_submit(parseInt(_id.substring(_id.lastIndexOf("-") + 1)));}));
+	.append($("<button></button>").addClass("button-d").attr("type", "button").text("删除").on("click", (event) => {let _id =     ((event.target.parentElement as HTMLElement).parentElement as HTMLElement).children[0].id; task_delete(parseInt(_id.substring(_id.lastIndexOf("-") + 1)));}))
+	.append($("<button></button>").addClass("button-d").attr("type", "button").text("完成").on("click", (event) => {let _id =     ((event.target.parentElement as HTMLElement).parentElement as HTMLElement).children[0].id; task_edit_submit(parseInt(_id.substring(_id.lastIndexOf("-") + 1)));}));
 }
 
 function task_setq_init() {
